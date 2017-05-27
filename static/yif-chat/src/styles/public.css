@@ -1,0 +1,11 @@
+/* 公共样式 */
+body {
+    background: #EBEBEB;
+    overflow: hidden;
+}
+a {
+   text-decoration: none; 
+}
+.text-center {
+    text-align: center;
+}

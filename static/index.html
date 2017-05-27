@@ -31,7 +31,7 @@
   <script>
     function login() {
       $.ajax({
-        url: 'http://localhost:1234/login',
+        url: '/login',
         type: 'POST',
         dataType: 'JSON',
         data: {
@@ -49,7 +49,7 @@
 
     function search() {
       $.ajax({
-        url: 'http://localhost:1234/userList?username=' + $('#username').val(),
+        url: '/userList?username=' + $('#username').val(),
         dataType: 'JSON',
         success: function(res) {
           var htmlStr = '';
@@ -65,7 +65,7 @@
 
     function register() {
       $.ajax({
-        url: 'http://localhost:1234/register',
+        url: '/register',
         type: 'POST',
         dataType: 'JSON',
         data: {

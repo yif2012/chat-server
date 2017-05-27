@@ -7,6 +7,7 @@ const convert = require('koa-convert');
 const session = require('koa-session2');
 const router = require('./src/router');
 const webCode = require('./src/asset/webCode');
+const Websocket = require('./src/actions/websocket');
 const app = new Koa();
 
 const CONFIG = {
@@ -16,7 +17,6 @@ const CONFIG = {
 app.use(session(CONFIG))
 
 app.use((ctx, next) => {
-  console.log(ctx.cookies.get('SESSIONID'))
   console.log(ctx.session)
   ctx.webCode = webCode
   return next()
@@ -25,7 +25,7 @@ app.context.render = co.wrap(render({ root: './static', autoescape: true, cache:
 app.use(static(__dirname + '/static'))
 app.use(koaBody({}))
 router(app)
-
+Websocket(app)
 app.listen(1234, () => {
   console.log('server start in port 1234')
 })
