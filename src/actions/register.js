@@ -3,7 +3,7 @@ const query = require('../db/query');
 const crypto = require('crypto');
 
 module.exports = async(ctx) => {
-  if (!ctx.request.body.account) {
+  if (!ctx.request.body.username) {
     ctx.body = ctx.webCode.USERNAMENULL();
     return
   }
@@ -19,13 +19,14 @@ module.exports = async(ctx) => {
     console.log('用户未被注册')
     const md5 = crypto.createHash('md5');
     let obj = {
-      account: ctx.request.body.account,
-      password: md5.update(ctx.request.body.password).digest('hex')
+      username: ctx.request.body.username,
+      password: md5.update(ctx.request.body.password).digest('hex'),
+      nickname: ctx.request.body.nickname
     }
     console.log(obj);
     let register = await query(sql('register', obj));
     if (register.affectedRows > 0) {
-      console.log('注册成功,用户名为' + ctx.request.body.account)
+      console.log('注册成功,用户名为' + ctx.request.body.username)
       ctx.body = ctx.webCode.SUCCESS()
     } else {
       ctx.body = ctx.webCode.EXCEPTION()

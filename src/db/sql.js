@@ -14,15 +14,15 @@ const sqlTree = {
     return sql
   },
   queryUser: (params) => {
-    let sql = format('select * from user where username = ?', params.account)
+    let sql = format('select * from user where username = ?', params.username)
     return sql
   },
   register: (params) => {
-    let sql = format('insert into user (username,password) values(?,?)', [params.account, params.password])
+    let sql = format('insert into user (username,password,nickname) values(?,?,?)', [params.username, params.password, params.nickname])
     return sql
   },
   login: (params) => {
-    let sql = format('select * from user where username = ? and password = ?', [params.account, params.password])
+    let sql = format('select * from user where username = ? and password = ?', [params.username, params.password])
     return sql
   }
 }

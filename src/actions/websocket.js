@@ -2,9 +2,9 @@ const IO = require('koa-socket');
 
 module.exports = (app) => {
   const io = new IO({
-    namespace: "mysocket",
+    namespace: "/s",
     ioOptions: {
-      path: '/restapi/websocketstock'
+      path: '/socket.io'
     }
   })
   const onlineUsers = {}
@@ -21,35 +21,37 @@ module.exports = (app) => {
   io.on('join', (ctx) => {
     io.name = ctx.data.userId;
     if (!onlineUsers.hasOwnProperty(ctx.data.userId)) {
-      onlineUsers[ctx.data.userId] = ctx.data.userName
+      onlineUsers[ctx.data.userId] = ctx.data.nickname
       onlineCount++
     }
-    io.broadcast('join', { onlineUsers, onlineCount, user: ctx.data.userName })
-    console.log(ctx.data.userName + '加入了聊天室');
+    io.broadcast('stockchallenge', { onlineUsers, onlineCount, nickname: ctx.data.nickname, type: 'join'})
+    console.log(ctx.data.nickname + '加入了聊天室');
   })
   io.on('messageClient', (ctx, next) => {
     console.log("来自客户端的消息", ctx.data);
     io.broadcast('stockchallenge', {
+      "type": 'message',
       "userId": ctx.data.userId,
-      "userName": ctx.data.userName,
+      "nickname": ctx.data.nickname,
       "content": ctx.data.content
     });
   })
   io.on('disconnect', (ctx) => {
     if (onlineUsers.hasOwnProperty(io.name)) {
       //退出用户的信息
-      var obj = { userid: io.name, username: onlineUsers[io.name] };
+      var obj = { userid: io.name, nickname: onlineUsers[io.name] };
       //删除
       delete onlineUsers[io.name];
       //在线人数-1
       onlineCount--;
       //向所有客户端广播用户退出
-      io.broadcast('logout', {
+      io.broadcast('stockchallenge', {
+        type: 'logout',
         onlineUsers,
         onlineCount,
-        user: obj.username
+        nickname: obj.nickname
       });
-      console.log(obj.username + '退出了聊天室');
+      console.log(obj.nickname + '退出了聊天室');
     }
   })
   io.attach(app)

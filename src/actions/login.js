@@ -4,7 +4,7 @@ const crypto = require('crypto');
 
 module.exports = async(ctx) => {
   try {
-    if (!ctx.request.body.account) {
+    if (!ctx.request.body.username) {
       ctx.body = ctx.webCode.USERNAMENULL()
       return
     }
@@ -14,16 +14,19 @@ module.exports = async(ctx) => {
     }
     const md5 = crypto.createHash('md5')
     let obj = {
-      account: ctx.request.body.account,
+      username: ctx.request.body.username,
       password: md5.update(ctx.request.body.password).digest('hex')
     }
     const res = await query(sql('login', obj))
     if (res.length) {
-      ctx.session = {
-        account: res[0].username,
-        count: 0
+      let sessionObj = {
+        id: res[0].id,
+        username: res[0].username,
+        nickname: res[0].nickname,
+        mobile: res[0].mobile
       }
-      ctx.body = ctx.webCode.SUCCESS({ res })
+      ctx.session = sessionObj
+      ctx.body = ctx.webCode.SUCCESS( sessionObj )
     } else {
       ctx.body = ctx.webCode.USERORPWDERROR()
     }
