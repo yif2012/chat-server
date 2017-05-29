@@ -1,1 +1,2 @@
-# 自己练练手的
+# yif-chat后台程序
+基于koa2 + mysql + websocket
